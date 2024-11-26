@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher.Common", "source\Watcher.Common\Watcher.Common.csproj", "{7512AF31-6B3B-47EC-A610-66F5F8C9D65F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher.IdentityService", "source\Watcher.IdentityService\Watcher.IdentityService.csproj", "{89935D72-F359-4396-B8D4-0306D36114FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watcher.AccountService", "source\Watcher.AccountService\Watcher.AccountService.csproj", "{28816529-0808-4327-B379-794751D3CE95}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7512AF31-6B3B-47EC-A610-66F5F8C9D65F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7512AF31-6B3B-47EC-A610-66F5F8C9D65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7512AF31-6B3B-47EC-A610-66F5F8C9D65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7512AF31-6B3B-47EC-A610-66F5F8C9D65F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89935D72-F359-4396-B8D4-0306D36114FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89935D72-F359-4396-B8D4-0306D36114FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89935D72-F359-4396-B8D4-0306D36114FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89935D72-F359-4396-B8D4-0306D36114FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28816529-0808-4327-B379-794751D3CE95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28816529-0808-4327-B379-794751D3CE95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28816529-0808-4327-B379-794751D3CE95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28816529-0808-4327-B379-794751D3CE95}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
