@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Watcher.IdentityService.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgres")));
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+var redis = ConnectionMultiplexer.Connect(redisConnectionString);
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
 
 var app = builder.Build();
 
