@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Watcher.IdentityService.DataContext;
+using Watcher.IdentityService.DataObjects.Requests;
 using Watcher.IdentityService.Interfaces;
 using Watcher.IdentityService.Models;
 
@@ -15,22 +15,24 @@ public class IdentityController : ControllerBase
     private readonly DatabaseContext _dbContext;
     private readonly IDatabase _redisDatabase;
     private readonly IEmailService _emailService;
-    private readonly ITokenService _jwtTokenService;
+    private readonly ITokenService _tokenService;
 
     public IdentityController(DatabaseContext dbContext,
         IConnectionMultiplexer connectionMultiplexer,
         IEmailService emailService,
-        ITokenService jwtTokenService)
+        ITokenService tokenService)
     {
         _dbContext = dbContext;
         _redisDatabase = connectionMultiplexer.GetDatabase();
         _emailService = emailService;
-        _jwtTokenService = jwtTokenService;
+        _tokenService = tokenService;
     }
 
     [HttpPost("SendEmailCode")]
-    public async Task<IActionResult> SendEmailCode([EmailAddress] string email)
+    public async Task<IActionResult> SendEmailCode([FromBody] SendEmailCodeDto dto)
     {
+        var email = dto.Email;
+        
         var random = new Random();
         var confirmationCode = random.Next(100000, 999999);
         
@@ -41,8 +43,11 @@ public class IdentityController : ControllerBase
     }
     
     [HttpPost("ConfirmCode")]
-    public async Task<IActionResult> ConfirmCode([EmailAddress] string email, int code)
+    public async Task<IActionResult> ConfirmCode([FromBody] ConfirmCodeDto dto)
     {
+        var email = dto.Email;
+        var code = dto.Code;
+        
         var codeFromRedis = await _redisDatabase.StringGetAsync(email);
         if (codeFromRedis != code.ToString())
         {
@@ -64,13 +69,16 @@ public class IdentityController : ControllerBase
             userRegistered = true;
         }
         
-        var token = _jwtTokenService.GenerateToken(user.Id, user.Email);
+        var token = _tokenService.GenerateToken(user.Id, user.Email);
         return Ok($"{userRegistered} {token}"); // TODO: переделать возвращаемый реузльтат
     }
     
     [HttpPost("Login")]
-    public async Task<IActionResult> Login([EmailAddress] string email, string password)
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
+        var email = dto.Email;
+        var password = dto.Password;
+        
         var user = await _dbContext.Set<User>().FirstOrDefaultAsync(user => user.Email == email);
         if (user is null)
             return Unauthorized("Invalid credentials");
@@ -78,13 +86,16 @@ public class IdentityController : ControllerBase
         if (!BCrypt.Net.BCrypt.Verify(password, user.HashPassword))
             return Unauthorized("Invalid credentials");
         
-        var token = _jwtTokenService.GenerateToken(user.Id, user.Email);
+        var token = _tokenService.GenerateToken(user.Id, user.Email);
         return Ok(token);
     }
     
     [HttpPost("UpdatePassword")]
-    public async Task<IActionResult> UpdatePassword(Guid userId, string newPassword)
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto dto)
     {
+        var userId = dto.UserId;
+        var newPassword = dto.NewPassword;
+        
         var user = await _dbContext.Set<User>().FindAsync(userId);
         if (user is null)
             return NotFound("User does not exist");

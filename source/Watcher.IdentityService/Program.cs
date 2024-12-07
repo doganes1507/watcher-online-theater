@@ -1,6 +1,9 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Watcher.IdentityService.DataContext;
+using FluentValidation.AspNetCore;
+using Watcher.IdentityService.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,12 @@ var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 var redis = ConnectionMultiplexer.Connect(redisConnectionString);
 
 builder.Services.AddSingleton<IConnectionMultiplexer>(redis);
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<ConfirmCodeDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<SendEmailCodeDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdatePasswordDtoValidator>();
 
 var app = builder.Build();
 
